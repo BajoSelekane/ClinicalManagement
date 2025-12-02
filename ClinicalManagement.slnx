@@ -1,4 +1,7 @@
 <Solution>
+  <Project Path="ClinicalManagement.Application/ClinicalManagement.Application.csproj" />
+  <Project Path="ClinicalManagement.Domain/ClinicalManagement.Domain.csproj" />
+  <Project Path="ClinicalManagement.Infrastructure/ClinicalManagement.Infrastructure.csproj" />
   <Project Path="ClinicalManagement/ClinicalManagement.Client/ClinicalManagement.Client.csproj" />
   <Project Path="ClinicalManagement/ClinicalManagement/ClinicalManagement.csproj" />
 </Solution>
