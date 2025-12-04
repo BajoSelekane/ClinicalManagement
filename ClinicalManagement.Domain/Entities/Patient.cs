@@ -1,9 +1,8 @@
 ﻿namespace ClinicalManagement.Domain.Entities
 {
-    public class Patient
+    public class Patient: BaseEntity
     {
-        public Guid Id { get; set; }= Guid.NewGuid();
-        public required long IDNumber { get; set; }
+        public required string IDNumber { get; set; }
         public required string Name { get; set; }
         public string? Email { get; set; }
         public string? PhoneNumber { get; set; }

@@ -4,11 +4,11 @@
 namespace ClinicalManagement.Application.Features.Appointments.Commands
 {
     public record CreateAppointmentCommand(
-        Guid ClinicId,
+        string ClinicId,
         DateTime AppoitmentDate,
         string Name,
-        long? IdNumber,
+        string? IdNumber,
         string? PhoneNumber,
         DateTime DOB,
-        string Desc) : IRequest<Guid>;
+        string Desc) : IRequest<string>;
 }

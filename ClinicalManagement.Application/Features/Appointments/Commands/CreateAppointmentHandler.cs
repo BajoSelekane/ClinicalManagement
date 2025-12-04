@@ -6,20 +6,20 @@ using System.Text;
 
 namespace ClinicalManagement.Application.Features.Appointments.Commands
 {
-    public class CreateAppointmentHandler : IRequestHandler<CreateAppointmentCommand, Guid>
+    public class CreateAppointmentHandler : IRequestHandler<CreateAppointmentCommand, string>
     {
         private readonly IBookingRepository _repo;
         public CreateAppointmentHandler(IBookingRepository repo) => _repo = repo;
 
 
-        public async Task<Guid> Handle(CreateAppointmentCommand request, CancellationToken cancellationToken)
+        public async Task<string> Handle(CreateAppointmentCommand request, CancellationToken cancellationToken)
         {
             // Basic validation
             var patient = new Domain.Entities.Patient
             {
-                Id = Guid.NewGuid(),
+               // Id = Guid.NewGuid(),
                 Name = request.Name,
-                IDNumber = (long)request.IdNumber,
+                IDNumber = request.IdNumber,
                 PhoneNumber = request.PhoneNumber,
                 DateOfBirth = request.DOB,
                 Description = request.Desc
@@ -29,18 +29,16 @@ namespace ClinicalManagement.Application.Features.Appointments.Commands
 
             var appointment = new Domain.Entities.Appointment
             {
-                Id = Guid.NewGuid(),
+               // Id = Guid.NewGuid(),
                 ClinicId = request.ClinicId,
                 PatientId = savedPatient.Id,
                 AppointmentDate =request.AppoitmentDate,
+                CreatedAt = DateTime.UtcNow
+                //Status = true
                 //TimeSlotId = request.TimeSlotId,
-                CreatedAt = DateTime.UtcNow,
-                Status = true
             };
 
-
-            var created = await _repo.CreateAppointmentAsync(appointment, cancellationToken);
-            
+            var created = await _repo.CreateAppointmentAsync(appointment, cancellationToken);          
             return created.Id;
         }
     }

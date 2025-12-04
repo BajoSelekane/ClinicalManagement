@@ -4,9 +4,8 @@ using System.Text;
 
 namespace ClinicalManagement.Domain.Entities
 {
-    public class Clinic
+    public class Clinic :BaseEntity
     {
-        public Guid Id { get; set; }
         public string Name { get; set; } = null!;
         public string Address { get; set; } = null!;
     }

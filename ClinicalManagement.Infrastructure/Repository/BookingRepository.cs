@@ -43,7 +43,9 @@ namespace ClinicalManagement.Infrastructure.Repository
 
         public async Task<IEnumerable<Appointment>> GetAllPatientsAsync()
         {
-            return await _ctx.appointments.Where(e => !e.Status).ToListAsync();
+
+            throw new NotImplementedException();
+            //return await _ctx.appointments.Where(e => !e.Status).ToListAsync();
         }
     }
 }
