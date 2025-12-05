@@ -9,7 +9,7 @@ namespace ClinicalManagement.Application.Interfaces
     {
         Task<IEnumerable<Appointment>> GetAllPatientsAsync();
         Task<List<Clinic>> GetClinicsAsync(CancellationToken ct = default);
-        Task<List<TimeSlot>> GetAvailableTimeSlotsAsync(Guid clinicId, DateTime date, CancellationToken ct = default);
+        Task<List<TimeSlot>> GetAvailableTimeSlotsAsync(string clinicId, DateTime date, CancellationToken ct = default);
         Task<Appointment> CreateAppointmentAsync(Appointment appt, CancellationToken ct = default);
         Task<Patient> EnsurePatientAsync(Patient patient, CancellationToken ct = default);
     }

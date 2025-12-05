@@ -10,6 +10,11 @@ using Microsoft.AspNetCore.OpenApi;
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
 using System.Reflection;
+using ClinicalManagement.Components.Account;
+using ClinicalManagement.Data;
+using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.AspNetCore.Identity;
+using MudBlazor.Services;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -19,12 +24,39 @@ builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents()
     .AddInteractiveWebAssemblyComponents();
 
+builder.Services.AddMudServices();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 
 
 builder.Services.AddDbContext<ClinicalContextDB>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("ApplicationDbContext")));
+
+builder.Services.AddCascadingAuthenticationState();
+
+builder.Services.AddScoped<IdentityUserAccessor>();
+
+builder.Services.AddScoped<IdentityRedirectManager>();
+
+builder.Services.AddScoped<AuthenticationStateProvider, IdentityRevalidatingAuthenticationStateProvider>();
+
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultScheme = IdentityConstants.ApplicationScheme;
+    options.DefaultSignInScheme = IdentityConstants.ExternalScheme;
+})
+    .AddIdentityCookies();
+
+builder.Services.AddIdentityCore<ClinicalManagementUser>(options => options.SignIn.RequireConfirmedAccount = false)
+    .AddEntityFrameworkStores<ApplicationDbContext>()
+    .AddSignInManager()
+    .AddDefaultTokenProviders();
+
+builder.Services.AddSingleton<IEmailSender<ClinicalManagementUser>, IdentityNoOpEmailSender>();
+
 
 builder.Services.AddQuickGridEntityFrameworkAdapter();
 
@@ -38,44 +70,27 @@ builder.Services.AddMediatR(cfg =>
 builder.Services.AddOpenApi();
 builder.Services.AddSwaggerGen();
 
-
-
-
 var app = builder.Build();
-
-app.UseMigrationsEndPoint();
-app.UseSwagger();
-
-
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
-    app.MapScalarApiReference();
+    app.UseSwagger();
+    // app.MapScalarApiReference();
 
 }
-//else
-//{
-//    app.UseExceptionHandler("/Error", createScopeForErrors: true);
-//    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-//    app.UseHsts();
-//    app.UseMigrationsEndPoint();
-//}
-//app.UseStatusCodePagesWithReExecute("/not-found", createScopeForStatusCodePages: true);
+app.UseMigrationsEndPoint();
 
-//if (app.Environment.IsDevelopment())
-//{
-//   app.MapOpenApi();
-//};
-//app.UseHttpsRedirection();
+app.UseHttpsRedirection();
 
-//app.UseAntiforgery();
+app.UseAntiforgery();
 
 app.MapStaticAssets();
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode()
     .AddInteractiveWebAssemblyRenderMode()
     .AddAdditionalAssemblies(typeof(ClinicalManagement.Client._Imports).Assembly);
+
+app.MapAdditionalIdentityEndpoints();;
 
 
 

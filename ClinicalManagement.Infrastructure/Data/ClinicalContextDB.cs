@@ -8,11 +8,12 @@ namespace ClinicalBookingSystem.Data
         public ClinicalContextDB(DbContextOptions options) : base(options)
         {
         }
-        public DbSet<Patient> patients { get; set; }
-        public DbSet<Doctor> doctors { get; set; }
-        public DbSet<Appointment> appointments { get; set; }
-        public DbSet<TimeSlot> timeslots { get; set; }
-        public DbSet<Clinic> clinics { get; set; }
+        public DbSet<Patient> Patients { get; set; }
+        public DbSet<Doctor> Poctors { get; set; }
+        public DbSet<Appointment> Appointments { get; set; }
+        public DbSet<TimeSlot> Timeslots { get; set; }
+        public DbSet<Clinic> Clinics { get; set; }
+        public DbSet<LoginModal> LoginModals { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

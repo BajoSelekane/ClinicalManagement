@@ -23,16 +23,16 @@ namespace ClinicalManagement.Controllers
 
         // GET: api/Appointments
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Appointment>>> Getappointments()
+        public async Task<ActionResult<IEnumerable<Appointment>>> GetAllappointments()
         {
-            return await _context.appointments.ToListAsync();
+            return await _context.Appointments.ToListAsync();
         }
 
         // GET: api/Appointments/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Appointment>> GetAppointment(Guid id)
+        public async Task<ActionResult<Appointment>> GetAppointment(string id)
         {
-            var appointment = await _context.appointments.FindAsync(id);
+            var appointment = await _context.Appointments.FindAsync(id);
 
             if (appointment == null)
             {
@@ -45,7 +45,7 @@ namespace ClinicalManagement.Controllers
         // PUT: api/Appointments/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutAppointment(string id, Appointment appointment)
+        public async Task<IActionResult> UpdateAppointment(string id, Appointment appointment)
         {
             if (id != appointment.Id)
             {
@@ -76,9 +76,9 @@ namespace ClinicalManagement.Controllers
         // POST: api/Appointments
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Appointment>> PostAppointment(Appointment appointment)
+        public async Task<ActionResult<Appointment>> CreateAppointment(Appointment appointment)
         {
-            _context.appointments.Add(appointment);
+            _context.Appointments.Add(appointment);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetAppointment", new { id = appointment.Id }, appointment);
@@ -86,15 +86,15 @@ namespace ClinicalManagement.Controllers
 
         // DELETE: api/Appointments/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteAppointment(Guid id)
+        public async Task<IActionResult> DeleteAppointment(string id)
         {
-            var appointment = await _context.appointments.FindAsync(id);
+            var appointment = await _context.Appointments.FindAsync(id);
             if (appointment == null)
             {
                 return NotFound();
             }
 
-            _context.appointments.Remove(appointment);
+            _context.Appointments.Remove(appointment);
             await _context.SaveChangesAsync();
 
             return NoContent();
@@ -102,7 +102,7 @@ namespace ClinicalManagement.Controllers
 
         private bool AppointmentExists(string id)
         {
-            return _context.appointments.Any(e => e.Id == id);
+            return _context.Appointments.Any(e => e.Id == id);
         }
     }
 }

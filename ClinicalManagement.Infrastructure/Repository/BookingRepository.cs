@@ -14,24 +14,24 @@ namespace ClinicalManagement.Infrastructure.Repository
         public BookingRepository(ClinicalContextDB ctx) => _ctx = ctx;
 
 
-        public async Task<List<Clinic>> GetClinicsAsync(CancellationToken ct = default) => await _ctx.clinics.AsNoTracking().ToListAsync(ct);
+        public async Task<List<Clinic>> GetClinicsAsync(CancellationToken ct = default) => await _ctx.Clinics.AsNoTracking().ToListAsync(ct);
 
 
-        public async Task<List<TimeSlot>> GetAvailableTimeSlotsAsync(Guid clinicId, DateTime date, CancellationToken ct = default)
+        public async Task<List<TimeSlot>> GetAvailableTimeSlotsAsync(string clinicId, DateTime date, CancellationToken ct = default)
         {
             var day = date.Date;
-            return await _ctx.timeslots.Where(t => t.ClinicId == clinicId && t.StartTime.Date == day && !t.IsAvailable).OrderBy(t => t.StartTime).ToListAsync(ct);
+            return await _ctx.Timeslots.Where(t => t.ClinicId == clinicId && t.StartTime.Date == day && !t.IsAvailable).OrderBy(t => t.StartTime).ToListAsync(ct);
         }
 
 
         public async Task<Appointment> CreateAppointmentAsync(Appointment appt, CancellationToken ct = default)
         {
             // Mark timeslot as booked
-            var ts = await _ctx.timeslots.FindAsync(new object[] { appt.AppointmentDate }, ct);
+            var ts = await _ctx.Timeslots.FindAsync(new object[] { appt.AppointmentDate }, ct);
             if (ts == null) throw new Exception("TimeSlot not found");
             if (ts.IsAvailable) throw new Exception("TimeSlot already booked");
             ts.IsAvailable = true;
-            _ctx.appointments.Add(appt);
+            _ctx.Appointments.Add(appt);
             await _ctx.SaveChangesAsync(ct);
             return appt;
         }
