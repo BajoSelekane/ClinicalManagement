@@ -1,10 +1,10 @@
-﻿using ClinicalBookingSystem.Data;
-using ClinicalManagement.Application.Interfaces;
+﻿using ClinicalManagement.Application.Interfaces;
 using ClinicalManagement.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using Microsoft.EntityFrameworkCore;
+using ClinicalManagement.Infrastructure.Data;
 
 namespace ClinicalManagement.Infrastructure.Repository
 {

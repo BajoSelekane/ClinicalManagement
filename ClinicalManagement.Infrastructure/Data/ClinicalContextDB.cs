@@ -1,7 +1,7 @@
 ﻿using ClinicalManagement.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace ClinicalBookingSystem.Data
+namespace ClinicalManagement.Infrastructure.Data
 {
     public class ClinicalContextDB : DbContext
     {

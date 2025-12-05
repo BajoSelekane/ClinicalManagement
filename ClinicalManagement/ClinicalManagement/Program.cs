@@ -1,5 +1,4 @@
-﻿using ClinicalBookingSystem.Data;
-using ClinicalManagement.Application.Interfaces;
+﻿using ClinicalManagement.Application.Interfaces;
 using ClinicalManagement.Client.Pages;
 using ClinicalManagement.Components;
 using ClinicalManagement.Domain.Entities;
@@ -15,6 +14,7 @@ using ClinicalManagement.Data;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 using MudBlazor.Services;
+using ClinicalManagement.Infrastructure.Data;
 
 
 var builder = WebApplication.CreateBuilder(args);

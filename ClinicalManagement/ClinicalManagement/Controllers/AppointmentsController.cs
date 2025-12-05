@@ -5,8 +5,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using ClinicalBookingSystem.Data;
 using ClinicalManagement.Domain.Entities;
+using ClinicalManagement.Infrastructure.Data;
 
 namespace ClinicalManagement.Controllers
 {
