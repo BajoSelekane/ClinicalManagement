@@ -14,4 +14,8 @@
     <ProjectReference Include="..\ClinicalManagement.Domain\ClinicalManagement.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Features\User\" />
+  </ItemGroup>
+
 </Project>

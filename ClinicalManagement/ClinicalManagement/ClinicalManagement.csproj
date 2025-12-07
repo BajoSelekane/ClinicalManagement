@@ -5,12 +5,14 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <BlazorDisableThrowNavigationException>true</BlazorDisableThrowNavigationException>
+    <UserSecretsId>bcd1d217-87ed-47e3-bbf9-e82292a259e1</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\ClinicalManagement.Domain\ClinicalManagement.Domain.csproj" />
     <ProjectReference Include="..\..\ClinicalManagement.Infrastructure\ClinicalManagement.Infrastructure.csproj" />
     <ProjectReference Include="..\ClinicalManagement.Client\ClinicalManagement.Client.csproj" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Components.QuickGrid.EntityFrameworkAdapter" Version="10.0.0-rc.1.25451.107" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="10.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="10.0.0-rc.1.25451.107" />
@@ -31,7 +33,6 @@
 
   <ItemGroup>
     <Folder Include="Areas\" />
-    <Folder Include="wwwroot\images\" />
   </ItemGroup>
 
 </Project>

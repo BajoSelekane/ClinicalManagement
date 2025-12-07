@@ -18,6 +18,7 @@ namespace ClinicalManagement.Infrastructure.Data
         public DbSet<Clinic> Clinics { get; set; }
         public DbSet<LoginModal> LoginModals { get; set; }
         public DbSet<RegisterModal> RegisterModals { get; set; }
+        
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
          

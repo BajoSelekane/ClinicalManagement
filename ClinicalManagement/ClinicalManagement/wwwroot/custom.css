@@ -1,7 +1,7 @@
 ﻿body {
 
     .login-background {
-        background-image: url('/images/medical-bg.jpg'); /* replace with your image */
+        background-image: url('/images/medical.jpg'); /* replace with your image */
         background-size: cover;
         background-position: center;
         height: 100vh;

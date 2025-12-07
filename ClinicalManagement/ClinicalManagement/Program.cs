@@ -1,20 +1,23 @@
 ﻿using ClinicalManagement.Application.Interfaces;
 using ClinicalManagement.Client.Pages;
 using ClinicalManagement.Components;
-using ClinicalManagement.Domain.Entities;
-using ClinicalManagement.Infrastructure.Repository;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.AspNetCore.OpenApi;
-using Microsoft.EntityFrameworkCore;
-using Scalar.AspNetCore;
-using System.Reflection;
 using ClinicalManagement.Components.Account;
 using ClinicalManagement.Data;
-using Microsoft.AspNetCore.Components.Authorization;
-using Microsoft.AspNetCore.Identity;
-using MudBlazor.Services;
+using ClinicalManagement.Domain.Entities;
+using ClinicalManagement.Features;
 using ClinicalManagement.Infrastructure.Data;
+using ClinicalManagement.Infrastructure.Repository;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.OpenApi;
+using Microsoft.EntityFrameworkCore;
+using MudBlazor.Services;
+using Scalar.AspNetCore;
+using System.Data;
+using System.Reflection;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -27,14 +30,20 @@ builder.Services.AddRazorComponents()
 builder.Services.AddMudServices();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddOpenApi();
 
 
 builder.Services.AddDbContext<ClinicalContextDB>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("ApplicationDbContext")));
 
+
+builder.Services.AddIdentity<ClinicalManagementUser, IdentityRole>()
+    .AddEntityFrameworkStores<ApplicationDbContext>();
+    //(options =>
+    //options.UseSqlServer(builder.Configuration.GetConnectionString("ApplicationDbContext")));
+    
 builder.Services.AddCascadingAuthenticationState();
 
 builder.Services.AddScoped<IdentityUserAccessor>();
@@ -67,17 +76,35 @@ builder.Services.AddScoped<IBookingRepository, BookingRepository>();
 builder.Services.AddMediatR(cfg =>
     cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
 
-builder.Services.AddOpenApi();
+
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
+
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
     app.UseSwagger();
+
+    using var scope = app.Services.CreateScope();
+    var dbContext = scope.ServiceProvider.GetRequiredService<ClinicalContextDB>();
+    dbContext.Database.Migrate();
+
+    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+    if(!await roleManager.RoleExistsAsync(Roles.Admin))
+    {
+       
+        await roleManager.CreateAsync(new IdentityRole(Roles.Admin));
+    }
+    if (!await roleManager.RoleExistsAsync(Roles.Member))
+    {
+        await roleManager.CreateAsync(new IdentityRole(Roles.Member));
+    }
     // app.MapScalarApiReference();
 
 }
+RegisterUser.MapEndpoint(app);
+LoginUser.MapEndpoint(app);
 app.UseMigrationsEndPoint();
 
 app.UseHttpsRedirection();
