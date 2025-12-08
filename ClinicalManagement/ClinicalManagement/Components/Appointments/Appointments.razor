@@ -1,0 +1,63 @@
+﻿@page "/Appointments"
+@using ClinicalManagement.Domain.Entities
+@using ClinicalManagement.Infrastructure
+@using ClinicalManagement.Infrastructure.Data
+@using MudBlazor
+@inject NavigationManager Nav
+
+<EditForm Model="@appointment" OnValidSubmit="SubmitLogin">
+    <MudGrid>
+        <MudItem>
+            @* <MudTextField Label="PatientId" @bind-Value="@appointment.PatientId" /> *@
+            <MudTextField Label="Phone" @bind-Value="@appointment.Phone"/>
+            <MudDatePicker Label="AppointmentDate" @bind-Value="@appointment.AppointmentDate" />
+            <MudDatePicker Label="EndTime" @bind-Value="@appointment.EndTime" />
+           
+        </MudItem>
+    </MudGrid>
+
+</EditForm>
+
+@inject ClinicalContextDB _context
+
+@code {
+    private Appointment appointment = new();
+
+    public class Appointment
+    {
+        public string PatientId { get; set; }
+        public string? DoctorId { get; set; }
+        public string? ClinicId { get; set; }
+        public string? Phone { get; set; }
+        public DateTime AppointmentDate { get; set; }
+        public DateTime EndTime { get; set; }
+        public Patient? patients { get; set; }
+        public Doctor? doctors { get; set; }
+        public Clinic? clinic { get; set; }
+        public TimeSlot? timeSlot { get; set; }
+    }
+
+    private void SubmitLogin()
+    {
+        
+    }
+
+}
+
+
+
+@* <MudPaper Width="250px" Class="py-3" Elevation="0">
+    <MudNavMenu>
+        <MudText Typo="Typo.h6" Class="px-4">Capture Appointment</MudText>
+        <MudText Typo="Typo.body2" Class="px-4 mud-text-secondary">Secondary Text</MudText>
+        <MudDivider Class="my-2" />
+        <MudNavLink Href="/dashboard">Dashboard</MudNavLink>
+        <MudNavLink Href="/servers">Servers</MudNavLink>
+        <MudNavLink Href="/billing" Disabled="true">Billing</MudNavLink>
+        <MudNavGroup Title="Settings" Expanded="true">
+            <MudNavLink Href="/users">Users</MudNavLink>
+            <MudNavLink Href="/security">Security</MudNavLink>
+        </MudNavGroup>
+        <MudNavLink Href="/about">About</MudNavLink>
+    </MudNavMenu>
+</MudPaper> *@

@@ -1,0 +1,66 @@
+﻿@page "/timeslots/details"
+@using Microsoft.EntityFrameworkCore
+@using ClinicalManagement.Domain.Entities
+@inject IDbContextFactory<ClinicalManagement.Infrastructure.Data.ClinicalContextDB> DbFactory
+@inject NavigationManager NavigationManager
+
+<PageTitle>Details</PageTitle>
+
+<h1>Details</h1>
+
+<div>
+    <h2>TimeSlot</h2>
+    <hr />
+    @if (timeslot is null)
+    {
+        <p><em>Loading...</em></p>
+    }
+    else {
+        <dl class="row">
+            <dt class="col-sm-2">DoctorId</dt>
+            <dd class="col-sm-10">@timeslot.DoctorId</dd>
+            <dt class="col-sm-2">ClinicId</dt>
+            <dd class="col-sm-10">@timeslot.ClinicId</dd>
+            <dt class="col-sm-2">DayOfWeek</dt>
+            <dd class="col-sm-10">@timeslot.DayOfWeek</dd>
+            <dt class="col-sm-2">StartTime</dt>
+            <dd class="col-sm-10">@timeslot.StartTime</dd>
+            <dt class="col-sm-2">EndTime</dt>
+            <dd class="col-sm-10">@timeslot.EndTime</dd>
+            <dt class="col-sm-2">IsAvailable</dt>
+            <dd class="col-sm-10">@timeslot.IsAvailable</dd>
+            <dt class="col-sm-2">CreatedAt</dt>
+            <dd class="col-sm-10">@timeslot.CreatedAt</dd>
+            <dt class="col-sm-2">UpdatedAt</dt>
+            <dd class="col-sm-10">@timeslot.UpdatedAt</dd>
+            <dt class="col-sm-2">CreatedBy</dt>
+            <dd class="col-sm-10">@timeslot.CreatedBy</dd>
+            <dt class="col-sm-2">UpdatedBy</dt>
+            <dd class="col-sm-10">@timeslot.UpdatedBy</dd>
+            <dt class="col-sm-2">Status</dt>
+            <dd class="col-sm-10">@timeslot.Status</dd>
+        </dl>
+        <div>
+            <a href="@($"/timeslots/edit?id={timeslot.Id}")">Edit</a> |
+            <a href="@($"/timeslots")">Back to List</a>
+        </div>
+    }
+</div>
+
+@code {
+    private TimeSlot? timeslot;
+
+    [SupplyParameterFromQuery]
+    private string Id { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        using var context = DbFactory.CreateDbContext();
+        timeslot = await context.Timeslots.FirstOrDefaultAsync(m => m.Id == Id);
+
+        if (timeslot is null)
+        {
+            NavigationManager.NavigateTo("notfound");
+        }
+    }
+}

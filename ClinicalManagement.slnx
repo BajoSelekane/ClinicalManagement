@@ -1,4 +1,9 @@
 <Solution>
+  <Project Path="ClinicalManagement.Application/ClinicalManagement.Application.csproj" />
+  <Project Path="ClinicalManagement.Domain/ClinicalManagement.Domain.csproj" />
+  <Project Path="ClinicalManagement.Infrastructure/ClinicalManagement.Infrastructure.csproj" />
   <Project Path="ClinicalManagement/ClinicalManagement.Client/ClinicalManagement.Client.csproj" />
   <Project Path="ClinicalManagement/ClinicalManagement/ClinicalManagement.csproj" />
+  <Project Path="WebApi/WebApi.Client/WebApi.Client.csproj" Id="857d4bc0-032c-4591-bd47-753dc5ee62b3" />
+  <Project Path="WebApi/WebApi/WebApi.csproj" Id="af37a3e8-1569-4c39-bdb1-de337f90a0ab" />
 </Solution>

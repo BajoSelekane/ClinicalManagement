@@ -1,0 +1,171 @@
+﻿@page "/timeslots"
+@using Microsoft.EntityFrameworkCore
+@using ClinicalManagement.Domain.Entities
+@using ClinicalManagement.Infrastructure.Data
+@inject IDbContextFactory<ClinicalContextDB> DbFactory
+@inject ISnackbar Snackbar
+
+<PageTitle>Time Slots</PageTitle>
+
+<MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="mt-4">
+    <MudPaper Elevation="3" Class="pa-4">
+        <div class="d-flex justify-space-between align-center mb-4">
+            <MudText Typo="Typo.h4">Time Slots Management</MudText>
+            <MudButton Variant="Variant.Filled"
+                      Color="Color.Primary"
+                      StartIcon="@Icons.Material.Filled.Add"
+                      OnClick="@(() => Navigation.NavigateTo("/timeslots/create"))">
+                New Time Slot
+            </MudButton>
+        </div>
+
+        @if (_timeSlots == null)
+        {
+            <MudProgressLinear Indeterminate="true" />
+        }
+        else if (!_timeSlots.Any())
+        {
+            <MudAlert Severity="Severity.Info">
+                No time slots found. Create a new one.
+            </MudAlert>
+        }
+        else
+        {
+            <MudTable Items="@_timeSlots" Hover="true" Striped="true">
+                <HeaderContent>
+                    <MudTh>Doctor</MudTh>
+                    <MudTh>Clinic</MudTh>
+                    <MudTh>Day</MudTh>
+                    <MudTh>Start Time</MudTh>
+                    <MudTh>End Time</MudTh>
+                    <MudTh>Available</MudTh>
+                    <MudTh>Created</MudTh>
+                    <MudTh>Status</MudTh>
+                    <MudTh>Actions</MudTh>
+                </HeaderContent>
+                <RowTemplate>
+                    <MudTd>@GetDoctorName(context.DoctorId)</MudTd>
+                    <MudTd>@GetClinicName(context.ClinicId)</MudTd>
+                    <MudTd>@context.DayOfWeek</MudTd>
+                    <MudTd>@context.StartTime.ToString("hh:mm tt")</MudTd>
+                    <MudTd>@context.EndTime.ToString("hh:mm tt")</MudTd>
+                    <MudTd>
+                        <MudChip Color="@(context.IsAvailable ? Color.Success : Color.Error)" 
+                                Variant="Variant.Filled" Size="Size.Small">
+                            @(context.IsAvailable ? "Yes" : "No")
+                        </MudChip>
+                    </MudTd>
+                    <MudTd>@context.CreatedAt.ToString("MMM dd, yyyy")</MudTd>
+                    <MudTd>
+                        <MudChip Color="@GetStatusColor(context.Status)" 
+                                Variant="Variant.Filled" Size="Size.Small">
+                            @context.Status
+                        </MudChip>
+                    </MudTd>
+                    <MudTd>
+                        <MudIconButton Icon="@Icons.Material.Filled.Edit" 
+                                     Color="Color.Primary" 
+                                     Size="Size.Small"
+                                     OnClick="@(() => Navigation.NavigateTo($"/timeslots/edit/{context.Id}"))" />
+                        <MudIconButton Icon="@Icons.Material.Filled.Info" 
+                                     Color="Color.Info" 
+                                     Size="Size.Small"
+                                     OnClick="@(() => Navigation.NavigateTo($"/timeslots/detail/{context.Id}"))" />
+                        <MudIconButton Icon="@Icons.Material.Filled.Delete" 
+                                     Color="Color.Error" 
+                                     Size="Size.Small"
+                                     OnClick="@(() => DeleteTimeSlot(context))" />
+                    </MudTd>
+                </RowTemplate>
+            </MudTable>
+        }
+    </MudPaper>
+</MudContainer>
+
+@code {
+    private List<TimeSlot>? _timeSlots;
+    private List<Doctor> _doctors = new();
+    private List<Clinic> _clinics = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadDataAsync();
+    }
+
+    private async Task LoadDataAsync()
+    {
+        try
+        {
+            await using var context = await DbFactory.CreateDbContextAsync();
+            _timeSlots = await context.Timeslots
+                .Include(ts => ts.Doctors)
+                .Include(ts => ts.Clinic)
+                .OrderByDescending(ts => ts.CreatedAt)
+                .ToListAsync();
+                
+            _doctors = await context.Doctors.ToListAsync();
+            _clinics = await context.Clinics.ToListAsync();
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Error loading data: {ex.Message}", Severity.Error);
+        }
+    }
+
+    private string GetDoctorName(string? doctorId)
+    {
+        if (string.IsNullOrEmpty(doctorId)) return "N/A";
+        var doctor = _doctors.FirstOrDefault(d => d.Id == doctorId);
+        return doctor?.Name ?? "Unknown";
+    }
+
+    private string GetClinicName(string? clinicId)
+    {
+        if (string.IsNullOrEmpty(clinicId)) return "N/A";
+        var clinic = _clinics.FirstOrDefault(c => c.Id == clinicId);
+        return clinic?.Name ?? "Unknown";
+    }
+
+    private Color GetStatusColor(string status)
+    {
+        return status.ToLower() switch
+        {
+            "active" => Color.Success,
+            "inactive" => Color.Default,
+            "pending" => Color.Warning,
+            "cancelled" => Color.Error,
+            _ => Color.Info
+        };
+    }
+
+    private async Task DeleteTimeSlot(TimeSlot timeSlot)
+    {
+        var parameters = new DialogParameters
+        {
+            ["ContentText"] = $"Delete time slot starting at {timeSlot.StartTime:hh:mm tt}?",
+            ["ButtonText"] = "Delete",
+            ["Color"] = Color.Error
+        };
+        
+        var options = new DialogOptions { CloseButton = true };
+        var dialog = DialogService.Show<MudDialog>("Confirm Delete", parameters, options);
+        var result = await dialog.Result;
+        
+        if (!result.Cancelled)
+        {
+            try
+            {
+                await using var context = await DbFactory.CreateDbContextAsync();
+                context.TimeSlots.Remove(timeSlot);
+                await context.SaveChangesAsync();
+                _timeSlots?.Remove(timeSlot);
+                Snackbar.Add("Time slot deleted", Severity.Success);
+                StateHasChanged();
+            }
+            catch (Exception ex)
+            {
+                Snackbar.Add($"Error: {ex.Message}", Severity.Error);
+            }
+        }
+    }
+}
