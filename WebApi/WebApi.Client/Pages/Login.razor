@@ -1,0 +1,84 @@
+﻿
+@using System.ComponentModel.DataAnnotations
+@using ClinicalManagement.Infrastructure.Data
+@using MudBlazor
+@inject NavigationManager Nav
+
+@page "/login"
+<h3>Login</h3>
+
+<div class="login-background d-flex align-items-center justify-content-center">
+    <MudPaper Elevation="12" Class="pa-6 rounded-xl" Style="width:420px; background-color:white;">
+
+        <div class="text-center mb-4">
+            <MudAvatar Color="Color.Primary">M</MudAvatar>
+             @* <MudAvatar Size="Size.Large" Variant="Variant.Rounded"
+                       Img="/images/logo.png" /> *@
+            <div class="mt-2">
+                <MudText Typo="Typo.body2">
+                    Bookings | DR Check-up | Appointments | Pharmacy
+                </MudText>
+            </div>
+        </div>
+
+        <EditForm Model="@model" OnValidSubmit="SubmitLogin">
+            <MudTextField @bind-Value="model.Email"
+                          Label="Email"
+                          Variant="Variant.Outlined"
+                          Required="true"
+                          Adornment="Adornment.End"
+                          AdornmentIcon="@Icons.Material.Filled.Email" />
+
+            <MudTextField @bind-Value="model.Password"
+                          Label="Password"
+                          Variant="Variant.Outlined"
+                          InputType="InputType.Password"
+                          Required="true"
+                          Adornment="Adornment.End"
+                          AdornmentIcon="@Icons.Material.Filled.Lock" />
+
+            @*  <MudCheckBox @bind-Checked="@model.RememberMe" Label="Remember Me" Class="mt-2" /> *@
+
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="mt-4" FullWidth="true"
+                       Type="Submit">
+                Sign In
+            </MudButton>
+
+            <MudDivider Class="my-4" />
+
+            <MudButton Variant="Variant.Outlined" Color="Color.Secondary" FullWidth="true"
+                       OnClick="@(() => Nav.NavigateTo("/register"))">
+                Register
+            </MudButton>
+
+            <MudText Class="mt-2 text-center">
+                <a href="#">I forgot my password</a>
+            </MudText>
+
+        </EditForm>
+
+    </MudPaper>
+</div>
+
+@inject ClinicalContextDB dbcontext
+@code {
+    private LoginModel model = new();
+
+    public class LoginModel
+    {
+        [Required, EmailAddress]
+        public string Email { get; set; } = "";
+
+        [Required]
+        public string Password { get; set; } = "";
+
+        public bool RememberMe { get; set; }
+    }
+
+    private void SubmitLogin()
+    {
+        //dbcontext.Add(LoginModal)
+        Console.WriteLine("Login Clicked");
+    }
+}
+

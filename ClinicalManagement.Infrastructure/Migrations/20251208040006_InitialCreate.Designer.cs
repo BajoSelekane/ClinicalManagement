@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ClinicalManagement.Infrastructure.Migrations
 {
     [DbContext(typeof(ClinicalContextDB))]
-    [Migration("20251205154509_InitClinic")]
-    partial class InitClinic
+    [Migration("20251208040006_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

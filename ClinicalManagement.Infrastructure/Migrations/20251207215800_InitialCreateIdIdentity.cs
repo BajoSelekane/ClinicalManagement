@@ -6,24 +6,24 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace ClinicalManagement.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class InitClinic : Migration
+    public partial class InitialCreateIdIdentity : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            //migrationBuilder.CreateTable(
-            //    name: "AspNetRoles",
-            //    columns: table => new
-            //    {
-            //        Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-            //        Name = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
-            //        NormalizedName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
-            //        ConcurrencyStamp = table.Column<string>(type: "nvarchar(max)", nullable: true)
-            //    },
-            //    constraints: table =>
-            //    {
-            //        table.PrimaryKey("PK_AspNetRoles", x => x.Id);
-            //    });
+            migrationBuilder.CreateTable(
+                name: "AspNetRoles",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
+                    NormalizedName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
+                    ConcurrencyStamp = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AspNetRoles", x => x.Id);
+                });
 
             migrationBuilder.CreateTable(
                 name: "AspNetUsers",

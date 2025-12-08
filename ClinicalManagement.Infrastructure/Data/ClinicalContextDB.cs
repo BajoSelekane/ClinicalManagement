@@ -12,7 +12,7 @@ namespace ClinicalManagement.Infrastructure.Data
         {
         }
         public DbSet<Patient> Patients { get; set; }
-        public DbSet<Doctor> Poctors { get; set; }
+        public DbSet<Doctor> Doctors { get; set; }
         public DbSet<Appointment> Appointments { get; set; }
         public DbSet<TimeSlot> Timeslots { get; set; }
         public DbSet<Clinic> Clinics { get; set; }

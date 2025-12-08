@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ClinicalManagement.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20251207211633_AddInitialCreateIdIdentity")]
+    [Migration("20251207215449_AddInitialCreateIdIdentity")]
     partial class AddInitialCreateIdIdentity
     {
         /// <inheritdoc />

@@ -5,7 +5,7 @@
 namespace ClinicalManagement.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class AddFieldsIdIdentity : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ClinicalManagement.Infrastructure.Migrations
 {
     [DbContext(typeof(ClinicalContextDB))]
-    [Migration("20251207205203_AddFieldsIdIdentity")]
-    partial class AddFieldsIdIdentity
+    [Migration("20251207215800_InitialCreateIdIdentity")]
+    partial class InitialCreateIdIdentity
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
