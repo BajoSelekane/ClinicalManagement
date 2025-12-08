@@ -1,0 +1,170 @@
+﻿@page "/clinics/create"
+@using Microsoft.EntityFrameworkCore
+@using ClinicalManagement.Domain.Entities
+@using ClinicalManagement.Infrastructure.Data
+@using System.ComponentModel.DataAnnotations
+@inject ClinicalContextDB contextDB
+@inject NavigationManager NavigationManager
+@inject ISnackbar Snackbar
+
+<PageTitle>Create Clinic</PageTitle>
+
+<MudGrid>
+    <MudItem xs="12" sm="10" md="8" lg="6" Class="mx-auto">
+        <MudPaper Class="pa-6" Elevation="5">
+            <MudText Typo="Typo.h4" Class="mb-4 text-center">Create New Clinic</MudText>
+            
+            <EditForm Model="@Clinic" OnValidSubmit="@AddClinic">
+                <DataAnnotationsValidator />
+                <ValidationSummary Class="text-danger mb-3" />
+                
+                <MudFormGroup>
+                    <!-- Name Field -->
+                    <MudTextField @bind-Value="Clinic.Name"
+                                 Label="Clinic Name"
+                                 Placeholder="Enter clinic name"
+                                 Required="true"
+                                 RequiredError="Name is required"
+                                 Immediate="true"
+                                 Class="mb-4" />
+                    
+                    <!-- Address Field -->
+                    <MudTextField @bind-Value="Clinic.Address"
+                                 Label="Address"
+                                 Placeholder="Enter clinic address"
+                                 Lines="3"
+                                 Immediate="true"
+                                 Class="mb-4" />
+                    
+                    <!-- Phone Number -->
+                   
+                    
+                    <!-- Additional Fields based on your Clinic entity -->
+                    @if (Clinic is ClinicExtended)
+                    {
+                        <MudSelect @bind-Value="_margin" Label="Margin">
+                            @foreach (var margin in Enum.GetValues(typeof(Margin)).Cast<Margin>())
+                            {
+                                <MudSelectItem Value="margin">@margin</MudSelectItem>
+                            }
+
+                            <MudSwitch @bind-Value="_dense" Label="Dense" Color="Color.Primary" />
+                            <MudSwitch @bind-Value="_readonly" Label="ReadOnly" Color="Color.Primary" />
+                            <MudSwitch @bind-Value="_disabled" Label="Disabled" Color="Color.Primary" />
+                            <MudSwitch @bind-Value="_placeholder" Label="Placeholder" Color="Color.Primary" />
+                            <MudSwitch @bind-Value="_helperText" Label="HelperText" Color="Color.Primary" />
+                            <MudSwitch @bind-Value="_helperTextOnFocus" Label="HelperTextOnFocus" Color="Color.Primary" />
+                            <MudSwitch @bind-Value="_clearable" Label="Clearable" Color="Color.Primary" />
+                            <MudSwitch @bind-Value="_fitContent" Label="FitContent" Color="Color.Primary" />
+                            <MudSwitch @bind-Value="_modal" Label="Modal" Color="Color.Primary" />
+                        </MudSelect>
+                    }
+                    
+                    <MudDivider Class="my-4" />
+                    
+                    <!-- Action Buttons -->
+                    <div class="d-flex justify-space-between mt-4">
+                        <MudButton Variant="Variant.Outlined"
+                                  Color="Color.Secondary"
+                                  OnClick="@(() => NavigationManager.NavigateTo("/clinics"))"
+                                  StartIcon="@Icons.Material.Filled.ArrowBack">
+                            Cancel
+                        </MudButton>
+                        
+                        <div>
+                            <MudButton Variant="Variant.Filled"
+                                      Color="Color.Primary"
+                                      ButtonType="ButtonType.Submit"
+                                      Disabled="@_isSubmitting"
+                                      StartIcon="@(_isSubmitting ? Icons.Material.Filled.HourglassEmpty : Icons.Material.Filled.Add)">
+                                @(_isSubmitting ? "Creating..." : "Create Clinic")
+                            </MudButton>
+                        </div>
+                    </div>
+                </MudFormGroup>
+            </EditForm>
+        </MudPaper>
+    </MudItem>
+</MudGrid>
+
+@code {
+    private Clinic Clinic = new();
+    private bool _isSubmitting = false;
+    private string _value;
+    private Margin _margin;
+    private bool _dense;
+    private bool _disabled;
+    private bool _readonly;
+    private bool _placeholder;
+    private bool _helperText;
+    private bool _helperTextOnFocus;
+    private bool _clearable;
+    private bool _fitContent;
+    private bool _modal = true;
+
+    private readonly string[] _states =
+    {
+        "General", "Flu", "Caugh", "Fructure", "Muscle",
+        "Therapy"
+    };
+    
+    private async Task AddClinic()
+    {
+        _isSubmitting = true;
+        
+        try
+        {
+            // Validate model
+            var validationContext = new ValidationContext(Clinic);
+            var validationResults = new List<ValidationResult>();
+            bool isValid = Validator.TryValidateObject(Clinic, validationContext, validationResults, true);
+            
+            if (!isValid)
+            {
+                foreach (var validationResult in validationResults)
+                {
+                    Snackbar.Add(validationResult.ErrorMessage, Severity.Error);
+                }
+                return;
+            }
+            
+            // Save to database
+            //await using var context = await ;
+            //var context = new ClinicalContextDB
+            contextDB.Clinics.Add(Clinic);
+            await contextDB.SaveChangesAsync();
+            
+            Snackbar.Add("Clinic created successfully!", Severity.Success);
+            
+            // Navigate back to clinics list after a brief delay
+            await Task.Delay(1500);
+            NavigationManager.NavigateTo("/clinics");
+        }
+        catch (DbUpdateException ex)
+        {
+            Snackbar.Add($"Database error: {ex.InnerException?.Message ?? ex.Message}", Severity.Error);
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Error: {ex.Message}", Severity.Error);
+        }
+        finally
+        {
+            _isSubmitting = false;
+            StateHasChanged();
+        }
+    }
+    
+    // Optional: Add clinic model with validation attributes
+    public class ClinicExtended : Clinic
+    {
+        [Required(ErrorMessage = "Clinic type is required")]
+        public string ClinicType { get; set; } = "General";
+        
+        [StringLength(500, ErrorMessage = "Description cannot exceed 500 characters")]
+        public string? Description { get; set; }
+        
+        [Required(ErrorMessage = "Opening hours are required")]
+        public string OpeningHours { get; set; } = "9:00 AM - 5:00 PM";
+    }
+}
