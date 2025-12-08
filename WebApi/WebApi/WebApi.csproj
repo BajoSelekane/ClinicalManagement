@@ -4,15 +4,20 @@
     <TargetFramework>net10.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+	  <!-- Suppress specific NU1903 warning -->
+	  <NoWarn>NU1903</NoWarn>
+
+	  <!-- OR suppress all NuGet security warnings -->
+	  <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
   </PropertyGroup>
 
 
   <ItemGroup>
     <ProjectReference Include="..\..\ClinicalManagement.Infrastructure\ClinicalManagement.Infrastructure.csproj" />
     <ProjectReference Include="..\WebApi.Client\WebApi.Client.csproj" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.QuickGrid.EntityFrameworkAdapter" Version="10.0.0-rc.1.25451.107" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.QuickGrid.EntityFrameworkAdapter" Version="10.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="10.0.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="10.0.0-rc.1.25451.107" />
+    <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="10.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="10.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="10.0.0" />

@@ -3,7 +3,7 @@
 @using ClinicalManagement.Domain.Entities
 @using ClinicalManagement.Infrastructure.Data
 @using System.ComponentModel.DataAnnotations
-@inject IDbContextFactory<ClinicalContextDB> DbFactory
+@inject ClinicalContextDB contextDB
 @inject NavigationManager NavigationManager
 @inject ISnackbar Snackbar
 
@@ -37,33 +37,26 @@
                                  Class="mb-4" />
                     
                     <!-- Phone Number -->
-                    <MudTextField @bind-Value="Clinic.Phone"
-                                 Label="Phone Number"
-                                 Placeholder="Enter contact number"
-                                 HelperText="Format: (xxx) xxx-xxxx"
-                                 Immediate="true"
-                                 Class="mb-4" />
-                    
-                    <!-- Email -->
-                    <MudTextField @bind-Value="Clinic.Email"
-                                 Label="Email Address"
-                                 Placeholder="clinic@example.com"
-                                 HelperText="Valid email address"
-                                 Validation="@(new System.ComponentModel.DataAnnotations.EmailAddressAttribute())"
-                                 Immediate="true"
-                                 Class="mb-4" />
+                   
                     
                     <!-- Additional Fields based on your Clinic entity -->
                     @if (Clinic is ClinicExtended)
                     {
-                        <MudSelect @bind-Value="((ClinicExtended)Clinic).ClinicType"
-                                  Label="Clinic Type"
-                                  T="string"
-                                  Class="mb-4">
-                            <MudSelectItem Value="General">General Practice</MudSelectItem>
-                            <MudSelectItem Value="Specialty">Specialty Clinic</MudSelectItem>
-                            <MudSelectItem Value="Hospital">Hospital</MudSelectItem>
-                            <MudSelectItem Value="UrgentCare">Urgent Care</MudSelectItem>
+                        <MudSelect @bind-Value="_margin" Label="Margin">
+                            @foreach (var margin in Enum.GetValues(typeof(Margin)).Cast<Margin>())
+                            {
+                                <MudSelectItem Value="margin">@margin</MudSelectItem>
+                            }
+
+                            <MudSwitch @bind-Value="_dense" Label="Dense" Color="Color.Primary" />
+                            <MudSwitch @bind-Value="_readonly" Label="ReadOnly" Color="Color.Primary" />
+                            <MudSwitch @bind-Value="_disabled" Label="Disabled" Color="Color.Primary" />
+                            <MudSwitch @bind-Value="_placeholder" Label="Placeholder" Color="Color.Primary" />
+                            <MudSwitch @bind-Value="_helperText" Label="HelperText" Color="Color.Primary" />
+                            <MudSwitch @bind-Value="_helperTextOnFocus" Label="HelperTextOnFocus" Color="Color.Primary" />
+                            <MudSwitch @bind-Value="_clearable" Label="Clearable" Color="Color.Primary" />
+                            <MudSwitch @bind-Value="_fitContent" Label="FitContent" Color="Color.Primary" />
+                            <MudSwitch @bind-Value="_modal" Label="Modal" Color="Color.Primary" />
                         </MudSelect>
                     }
                     
@@ -97,6 +90,23 @@
 @code {
     private Clinic Clinic = new();
     private bool _isSubmitting = false;
+    private string _value;
+    private Margin _margin;
+    private bool _dense;
+    private bool _disabled;
+    private bool _readonly;
+    private bool _placeholder;
+    private bool _helperText;
+    private bool _helperTextOnFocus;
+    private bool _clearable;
+    private bool _fitContent;
+    private bool _modal = true;
+
+    private readonly string[] _states =
+    {
+        "General", "Flu", "Caugh", "Fructure", "Muscle",
+        "Therapy"
+    };
     
     private async Task AddClinic()
     {
@@ -119,9 +129,10 @@
             }
             
             // Save to database
-            await using var context = await DbFactory.CreateDbContextAsync();
-            context.Clinics.Add(Clinic);
-            await context.SaveChangesAsync();
+            //await using var context = await ;
+            //var context = new ClinicalContextDB
+            contextDB.Clinics.Add(Clinic);
+            await contextDB.SaveChangesAsync();
             
             Snackbar.Add("Clinic created successfully!", Severity.Success);
             
